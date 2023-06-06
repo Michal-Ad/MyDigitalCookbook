@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -40,13 +41,28 @@ class AddItemFragment : Fragment() {
         _binding = AddItemLayoutBinding.inflate(inflater,container,false)
 
         binding.finishBtn.setOnClickListener {
-           /* val bundle  = bundleOf("title" to binding.itemTitle.text.toString(),
-                "description" to binding.itemDescription.text.toString())*/
-            val item = Item(binding.itemTitle.text.toString(), binding.itemDescription.text.toString(), imgeUri.toString())
-
-            viewModel.addItem(item)
-
-            findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+            /* val bundle  = bundleOf("title" to binding.itemTitle.text.toString(),
+                 "description" to binding.itemDescription.text.toString())*/
+            if (binding.itemTitle.text.toString() == "") {
+                // Alert
+                val builder = this.context?.let { it1 -> AlertDialog.Builder(it1) }
+                builder?.setTitle("Oops...")
+                builder?.setMessage("Item title must not be empty")
+                builder?.setPositiveButton("Ok") { _, _ ->
+                    // alert dissappears, do nothing
+                }
+                val dialog = builder?.create()
+                dialog?.show()
+            }
+            else {
+                val item = Item(
+                    binding.itemTitle.text.toString(),
+                    binding.itemDescription.text.toString(),
+                    imgeUri.toString()
+                )
+                viewModel.addItem(item)
+                findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+            }
         }
 
         binding.imageBtn.setOnClickListener {
